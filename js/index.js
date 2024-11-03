@@ -41,6 +41,9 @@ const callAPI = {
     getVehicles: async () => {
         return fetch(APIVehicles).then(e => e.json());
     },
+    getVehiclesID: async (id) => {
+        return fetch(`${APIVehicles}/${id}`).then(e => e.json());
+    },
     createVehicles: async (data) => {
         return fetch(APIVehicles, {
             method: "POST",
@@ -91,7 +94,6 @@ vehicleLi.addEventListener("click", function () {
 const render = {
     renderUser: async function () {
         const data = await callAPI.getUser();
-        console.log(data)
         let table = `<table>
                     <tr>
                         <th>
@@ -123,7 +125,7 @@ const render = {
                     <div>
                     <div>
                         <button type="button" id="sumit-repass" onclick="updatePass()">Đồng Ý</button>
-                        <button type="button" class="btn-cancel" id="exit" onclick ="closeForm(${element.id})">Thoát</button>
+                        <button type="button" class="btn-cancel" id="exit" onclick ="closeForm(${element.id},'openRepass-')">Thoát</button>
                     </div>
                 </div>
             </td>
@@ -143,7 +145,6 @@ const render = {
 
     renderVehicles: async function () {
         const data = await callAPI.getVehicles();
-        console.log(data)
         let table = `<table>
                     <tr>
                         <th>
@@ -202,18 +203,18 @@ const render = {
                                 <input type="text" name="mausac" id="mausac-${element.id}">
                             </div>
                             <div>
-                                <button type="button" onclick="" id="button-update">Xác Nhận</button>
-                                <button type="button" onclick="" class="button-canel">Từ chối</button>
+                                <button type="button" id="button-update" onclick = "updateVehicles()">Xác Nhận</button>
+                                <button type="button" class="button-canel" onclick = "closeForm(${element.id}, 'form-update-')">Từ chối</button>
                             </div>
                         </div>
                         <div id="form-delete-${element.id}" class="form">
                             <h2>Xoá Thông Tin Xe</h2>
-                            <p>
+                            <p> 
                                 Bạn có chắc chắn muốn xoá thông tin xe này chứ?
                             </p>
                             <div>
-                                <button type="button" onclick="" id="button-delete">Xác Nhận</button>
-                                <button type="button" onclick="" class="button-canel">Từ chối</button>
+                                <button type="button" id="button-delete" onclick = "deleteVehicles()">Xác Nhận</button>
+                                <button type="button" class="button-canel" onclick = "closeForm(${element.id},'form-delete-')">Từ chối</button>
                             </div>
                         </div>
                     </td>
@@ -227,6 +228,8 @@ const render = {
 showSection('user-management');
 render.renderUser()
 
+var selectID = null;
+var selectForm = null
 
 // xử lý get lock và không lock
 async function getLockAndOpen(id) {
@@ -248,46 +251,76 @@ async function updateIsFlag(id) {
     const btn = document.getElementById(`lock-${id}`)
     const updateFlag = await callAPI.updateUser({ isFlag: newFlag }, id)
     btn.innerText = updateFlag.isFlag ? "Mở khoá" : "Khoá";
-    console.log(updateFlag);
     getLockAndOpen(id);
 }
-var selectID = null;
 
+
+// user
 function loadUser(id){
-    var userId = `openRepass-${id}`
-    openForm(userId);
+    var userId = `openRepass-`
+    openForm(id,userId);
     selectID=id;
-    console.log(selectID)
 }
-function loadVehiclesUpdate(id){
-    var vehiclesId = `form-update-${id}`
-    openForm(vehiclesId);
-    selectID=id;
-    console.log(selectID)
-}
-function loadVehiclesDelete(id){
-    var vehiclesId = `form-delete-${id}`
-    openForm(vehiclesId);
-    selectID=id;
-    console.log(selectID)
-}
+
 async function updatePass() {
     const data = await callAPI.getUserId(selectID);
-    var newPass = document.getElementById("newPass").value
+    var newPass = document.getElementById("newPass").value;
     if(data.id == selectID){
         await callAPI.updateUser({password: newPass},selectID)
-        console.log("đã đổi mất khẩu thành công", data.password)
+        console.log("đã đổi mất khẩu thành công")
     }
+    selectID=null;
     render.renderUser();
 }
 
-function openForm(id){
-    if(selectID != null){
-        closeForm(selectID);
-    }
-    document.getElementById(id).style.display = "block"
+//Vehicles
+function loadVehiclesUpdate(id){
+    var vehiclesId = `form-update-`
+    openForm(id,vehiclesId);
+    selectID=id;
 }
-function closeForm(id){
-    document.getElementById(id).style.display = "none";
+
+async function updateVehicles(){
+    const data = await callAPI.getVehiclesID(selectID);
+    var newNameChuXe = document.getElementById(`namechuxe-${selectID}`).value;
+    var newBienSo = document.getElementById(`bienso-${selectID}`).value;
+    var newHangXe = document.getElementById(`hangxe-${selectID}`).value;
+    var newMauSac = document.getElementById(`mausac-${selectID}`).value;
+    if(data.id == selectID){
+        await callAPI.updateVehicles({
+            tenchuxe:newNameChuXe,
+            bienso : newBienSo,
+            hangxe : newHangXe,
+            mausac : newMauSac
+        },selectID)
+        console.log("đã update thành công")
+    }
+    selectID=null;
+    render.renderVehicles();
+}
+
+function loadVehiclesDelete(id){
+    var vehiclesId = `form-delete-`
+    openForm(id,vehiclesId);
+    selectID=id;
+}
+async function deleteVehicles(){
+    const data = await callAPI.getVehiclesID(selectID);
+    if(data.id == selectID){
+        await callAPI.deleteVehicles(selectID)
+        console.log("đã xoá thành công")
+    }
+    selectID=null;
+    render.renderVehicles();
+}
+
+function openForm(id,pre){
+    if(selectID != null){
+        closeForm(selectID,pre);
+    }
+    document.getElementById(pre + id).style.display = "block"
+}
+function closeForm(id, pre){
+    document.getElementById(pre + id).style.display = "none";
 }
 

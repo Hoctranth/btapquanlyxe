@@ -72,20 +72,27 @@ const user ={
         const username = usernameInput.value;
         const password = passwordInput.value;
         const data = await api.get();
+        console.log(data)
         if(await checkText(username,password)){
-            let isLogin = false;
+            let flag = false;
             for (let i = 0; i < data.length; i++) {
                 if (username == data[i].username && password == data[i].password) {
-                    console.log("đăng nhập thành công")
-                    window.location.href="../home.html";
-                    isLogin = true;
+                    flag = true;
+                    if(data[i].isFlag == false){
+                        console.log("đăng nhập thành công")
+                        window.location.href="../home.html";
+                    }
+                    else {
+                        console.log("Tài khoản của bạn đã bị khoá, Vui lòng liên hệ admin");
+                    }
                     break;
                 }
             }
-            if(!isLogin){
-                console.log("không được đăng nhập")
+            if(!flag){
+                console.log("đăng nhập không thành công")
             }
         }
+        
     },
     register: async function (){
         const username = usernamePost.value;
@@ -100,7 +107,6 @@ const user ={
             api.create(data).then(console.log);
         }
         else {
-            console.log("1",checkTextLogup(username,password,rePassword))
             console.log("Đăng ký không thành công")
         }
     }
@@ -118,7 +124,7 @@ async function checkText(username,password){
         errors(passwordInput,"Mật khẩu không được để trống")
         isCheck = false;
     }
-    else success(usernameInput)
+    else success(passwordInput)
     return isCheck;
 }
 
