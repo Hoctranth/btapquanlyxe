@@ -73,7 +73,7 @@ const user ={
         const password = passwordInput.value;
         const data = await api.get();
         console.log(data)
-        if(await checkText(username,password)){
+        if(checkText(username,password)){
             let flag = false;
             for (let i = 0; i < data.length; i++) {
                 if (username == data[i].username && password == data[i].password) {
@@ -98,13 +98,13 @@ const user ={
         const username = usernamePost.value;
         const password = passwordPost.value;
         const rePassword = rePasswordPost.value;
-        if(await checkTextLogup(username,password,rePassword)){
-            console.log(checkTextLogup(username,password,rePassword))
+        if(checkTextLogup(username,password,rePassword)){
             let data = {
                 username : usernamePost.value,
                 password : passwordPost.value
             }
-            api.create(data).then(console.log);
+            const repo =  await api.create(data);
+            console.log(repo)
         }
         else {
             console.log("Đăng ký không thành công")
@@ -113,7 +113,7 @@ const user ={
 
 }
 
-async function checkText(username,password){
+function checkText(username,password){
     let isCheck = true;
 
     if(username==""){
@@ -128,7 +128,7 @@ async function checkText(username,password){
     return isCheck;
 }
 
-async function checkTextLogup(username,password,rePassword){
+function checkTextLogup(username,password,rePassword){
     let isCheck = true;
     if(username==""){
         errors(usernamePost,"Tài khoản không được để trống")
