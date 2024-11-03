@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+     <!-- 2 phần
+        1. Phần quản lý user
+        Gồm:
+        Id
+        Tên User
+        Tên tài khoản
+        Chức năng: 
+        2. Phần quản lý xe 
+        Chức năng chung:Thêm thông tin xe
+        gồm: 
+        Id
+        Tên chủ xe
+        Hãng xe
+        Biển số xe
+        Màu sắc
+        - chức năng riêng cho từng id: sửa, xoá
+
+     -->
+    
+    <div class="login-container">
+        <div class="login-form" id="login-form-container">
+            <h2>ĐĂNG NHẬP</h2>
+            <form action="" id="login-form">
+                <div class="input-group">
+                    <label for="username">Tên đăng nhập</label>
+                    <input type="text" id="username" name="username" required>
+                    <small class="small-user"></small>
+                </div>
+                <div class="input-group">
+                    <label for="password">Mật khẩu</label>
+                    <input type="password" id="password" name="password" required>
+                    <button type="button" id="togglePassword" onclick="togglePasswordVisibility()">Hiện</button>
+                    <small class="small-user"></small>
+                </div>
+                <button type="button" onclick="" id="login">Đăng Nhập</button>
+                <button type="button" onclick="" id="logup">Đăng Ký</button>
+            </form>
+        </div>
+        <div class="logup-form" id="logup-form-container">
+            <h2>ĐĂNG KÝ</h2>
+            <form action="" id="logup-form" >
+                <div class="input-group">
+                    <label for="username">Tên đăng nhập</label>
+                    <input type="text" id="username-logup" name="username" required>
+                    <small class="small-user"></small>
+                </div>
+                <div class="input-group">
+                    <label for="password">Mật khẩu</label>
+                    <input type="password" id="password-logup" name="password" required>
+                    <small class="small-user"></small>
+                </div>
+                <div class="input-group">
+                    <label for="re-password">Nhập lại mật khẩu</label>
+                    <input type="password" id="re-password" name="re-password" required>
+                    <small class="small-user"></small>
+                </div>
+                <button type="button" onclick="" id="logup1">Đăng Ký</button>
+                <button type="button" onclick="" id="login1">Đăng Nhập</button>
+            </form>
+        </div>
+            
+        </div>
+    </div>
+    <script src="./js/login.js"></script>
+</body>
+</html>
